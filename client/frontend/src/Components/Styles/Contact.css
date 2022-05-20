@@ -1,0 +1,8 @@
+.contact
+{
+    background-image: url("../../../public/Resources/Backgrounds/WorldsEnd.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    flex: 1 1 auto;
+    color: white;
+}

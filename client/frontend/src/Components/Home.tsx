@@ -58,7 +58,10 @@ const TradingViewWidget = (props) => {
         script.innerHTML = JSON.stringify(symbols);
         document.getElementById("widget-container").appendChild(script);
         return () => {
-            document.getElementById("widget-container").removeChild(script);
+            if (document.getElementById("widget-container") != null)
+            {
+                document.getElementById("widget-container").removeChild(script);
+            }
         }
     }, [symbols]);
 

@@ -1,0 +1,94 @@
+.claw
+{
+    background-image: url("../../../public/Resources/Backgrounds/Interstellar.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    flex: 1 1 auto;
+    color: white;
+    text-align: center;
+}
+
+.clawcontroller 
+{
+    padding: 10px 10px;
+    border-radius: 5px;
+    width: 65%;
+    background-color: #555;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.control-left
+{
+    text-align: center;
+    width: 15%;
+}
+
+.control-right
+{
+    text-align: center;
+    width: 15%;
+    float: right;
+    background-color: white;
+    position: relative;
+    bottom: 0px;
+}
+
+.directional
+{
+    display: inline-block;
+    text-align: center;
+}
+
+.move-up
+{
+    width: 0;
+    height: 0;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-bottom: 25px solid red;
+    margin: 0 auto;
+    margin-bottom: 15px;
+}
+
+.move-left
+{
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-right: 25px solid red;
+    display: inline-block;
+    margin-right: 35px;
+}
+
+.move-right
+{
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 25px solid red;
+    display: inline-block;
+    margin-left: 35px;
+}
+
+.move-down
+{
+    width: 0;
+    height: 0;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-top: 25px solid red;
+    margin: 0 auto;
+    margin-top: 15px;
+}
+
+.move-drop
+{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: red;
+    display: inline-block;
+}

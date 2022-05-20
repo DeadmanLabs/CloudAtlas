@@ -3,10 +3,12 @@ import { WalletNotConnectedError, WalletSignTransactionError } from '@solana/wal
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
+import './Styles/Invest.css';
+
 const Invest = (props) => {
 
     return (
-        <div>
+        <div className="invest">
             Invest
         </div>
     );

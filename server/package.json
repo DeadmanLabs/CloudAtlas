@@ -11,10 +11,12 @@
   "dependencies": {
     "@solana/web3.js": "^1.41.9",
     "body-parser": "^1.20.0",
+    "bybit-api": "^2.2.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "formidable": "^2.0.1",
     "mysql": "^2.18.1",
+    "nodemailer": "^6.7.5",
     "socket.io": "^4.5.0",
     "uuid": "^8.3.2"
   }

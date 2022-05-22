@@ -7,9 +7,45 @@ import './Styles/Blog.css';
 
 const Blog = (props) => {
 
+    const [posts, setPosts] = useState(undefined);
+    const [loading, setLoading] = useState(false);
+
+    const getBlog = async () => {
+        setLoading(true);
+        let err = true;
+        while (err)
+        {
+            try
+            {
+                await fetch("https://127.0.0.1/blog")
+                    .then(response => {
+                        err = false;
+                        return response.json();
+                    })
+                    .then(data => {
+                        err = data.status == "failed"
+                        setPosts(data);
+                        setLoading(false);
+                    });
+            } catch { err = true; }
+        }
+    }
+
+    useEffect(() => {
+        getBlog();
+    }, []);
+
     return (
         <div className="blog">
-            Blog
+            {loading ? 
+                <div>
+                    <div>Loading Blog Posts...</div>
+                    <img src="../../public/Resources/Status/Loading.gif" />
+                </div>
+                :
+                <div>
+                </div>
+            }
         </div>
     );
 }

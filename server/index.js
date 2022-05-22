@@ -7,7 +7,9 @@ const bodyParser = require('body-parser');
 const uuid = require('uuid');
 const cors = require('cors');
 const sql = require('mysql');
+const nodemailer = require('nodemailer');
 const formidable = require('formidable');
+const bybit = require('bybit-api');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({}));
@@ -20,6 +22,13 @@ const wss = require('socket.io')(server, {
     cors: {
         origin: '*',
     }
+});
+const emailer = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: config["Email"]["User"],
+        pass: config["Email"]["Password"]
+    } 
 });
 
 
@@ -66,20 +75,22 @@ app.get('/blog', function (req, res) {
        }
        else
        {
-            database.query("SELECT * from blogposts", function (err, result, fields) {
+            database.query("SELECT * from blogposts", function (err, result, fields) 
+            {
                 if (err)
                 {
                     res.send(JSON.stringify({ status: "failed", endpoint: "blog", reason: err }));
                 }
                 else 
                 {
-                    res.send(JSON.stringify({ posts: result }));
+                    res.send(JSON.stringify({ status: "success", posts: result }));
                 }
             });
        }
        res.end();
+       return;
     });
-    res.send();
+    res.send(JSON.stringify({ status: "failed", action: "SQL Connect" }));
     res.end();
 });
 
@@ -88,6 +99,28 @@ app.post('/blog', function(req, res) {
 
     console.log("[DBG HTTPS] - New Blog Post!");
     res.send();
+    res.end();
+});
+
+app.post('/contact', function(req, res) {
+    let params = req.body.params;
+    let mail = {
+        from: params.sender,
+        to: 'michael.magahey@gmail.com',
+        subject: 'New Contact!',
+        text: params.message
+    };
+    emailer.sendMail(mail, function(error, info) {
+        if (error) {
+            console.log(`[DBG Email] - ${error}`);
+            res.send(JSON.stringify({ status: "failed", action: "email", err: error }));
+        }
+        else {
+            console.log('[DBG Email] - Email Sent!');
+            res.send(JSON.stringify({ status: "success", action: "email" }));
+        }
+    });
+    console.log("[DBG HTTPS] - New Contact Message!");
     res.end();
 });
 
@@ -102,6 +135,27 @@ app.post('/upload', function(req, res) {
             res.end();
         });
     });
+});
+
+app.get('/claw', function(req, res) {
+    
+    console.log("[DBG HTTPS] - Claw Queried");
+    res.send();
+    res.end();
+});
+
+app.get('/casino', function(req, res) {
+
+    console.log("[DBG HTTPS] - Casino Games Queried");
+    res.send();
+    res.end();
+});
+
+app.get('/invest', function(req, res) {
+
+    console.log("[DBG HTTPS] - Investments Queried!");
+    res.send();
+    res.end();
 });
 
 wss.on('connection', async (ws) => {

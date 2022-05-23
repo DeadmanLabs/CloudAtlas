@@ -131,7 +131,7 @@ app.post('/upload', function(req, res) {
         let newpath = 'Resources/' + files.filetoupload.originalFilename;
         fs.rename(oldpath, newpath, function (err) {
             if (err) throw err;
-            res.write('File Uploaded!');
+            res.write(JSON.stringify({ status: "success", action: "upload" }));
             res.end();
         });
     });
@@ -154,6 +154,21 @@ app.get('/casino', function(req, res) {
 app.get('/invest', function(req, res) {
 
     console.log("[DBG HTTPS] - Investments Queried!");
+    res.send();
+    res.end();
+});
+
+app.get('/donate', function(req, res) {
+
+    console.log("[DBG HTTPS] - Possible Deposit Assets Requested!");
+    res.send();
+    res.end();
+});
+
+app.post('/donate', function(req, res) {
+    let params = req.body.params;
+
+    console.log("[DBG HTTPS] - Donation Address Requested!");
     res.send();
     res.end();
 });

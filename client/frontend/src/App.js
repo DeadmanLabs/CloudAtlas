@@ -13,6 +13,8 @@ import {
 } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { Nav } from './Components/Nav.tsx';
 import { Home } from './Components/Home.tsx';
@@ -44,19 +46,21 @@ function App() {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <div className="Container">
-              <Nav className="mainNav" callback={setPage} page={page}/>
-              {
-                {
-                  'Home': <Home className="main" />,
-                  'Blog': <Blog className="main" />,
-                  'Claw': <Claw className="main" />,
-                  'Invest': <Invest className="main" />,
-                  'Gamble': <Casino className="main" />,
-                  'Lake': <Lake className="main" />,
-                  'Contact': <Contact className="main" />,
-                  'About': <About className="main" />
-                }[page]
-              }
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Nav className="mainNav" callback={setPage} page={page} />} >
+                    <Route index element={<Home className="main" />} />
+                    <Route path="blog" element={<Blog className="main" />} />
+                    <Route path="claw" element={<Claw className="main" />} />
+                    <Route path="invest" element={<Invest className="main" />} />
+                    <Route path="casino" element={<Casino className="main" />} />
+                    <Route path="lake" element={<Lake className="main" />} />
+                    <Route path="contact" element={<Contact className="main" />} />
+                    <Route path="about" element={<About className="main" />} />
+                    <Route path="*" element={<div></div>} />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
             </div>
           </WalletModalProvider>
         </WalletProvider>

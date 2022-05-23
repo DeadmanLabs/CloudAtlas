@@ -5,6 +5,15 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 import './Styles/Blog.css';
 
+const Post = (props) => {
+
+    return (
+        <div className="post" id={props.index}>
+
+        </div>
+    )
+}
+
 const Blog = (props) => {
 
     const [posts, setPosts] = useState(undefined);
@@ -44,6 +53,9 @@ const Blog = (props) => {
                 </div>
                 :
                 <div>
+                    {
+                        Object.keys(posts).map(function() { return(<Post />) })
+                    }
                 </div>
             }
         </div>

@@ -16,6 +16,7 @@
     "express": "^4.18.1",
     "formidable": "^2.0.1",
     "mysql": "^2.18.1",
+    "neataptic": "^1.4.7",
     "nodemailer": "^6.7.5",
     "socket.io": "^4.5.0",
     "uuid": "^8.3.2"

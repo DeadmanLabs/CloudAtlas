@@ -1,3 +1,8 @@
+const http = require('http');
+const express = require('express');
+const app = express();
+const cors = require('cors');
+
 const bybit = require('bybit-api');
 const fs = require('fs');
 const neat = require('neataptic');
@@ -5,6 +10,110 @@ const neat = require('neataptic');
 bybit.DefaultLogger.silly = () => {};
 bybit.DefaultLogger.info = () => {};
 bybit.DefaultLogger.debug = () => {};
+const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+
+let orderbook = {};
+let symbol = {};
+
+//Manage Market Data
+const REST = new bybit.LinearClient(
+    config["bybit"]["api"],
+    config["bybit"]["secret"],
+    config["bybit"]["live"]
+);
+const Websocket = new bybit.WebsocketClient({ 
+    key: config["bybit"]["api"], 
+    secret: config["bybit"]["secret"],
+    livenet: config["bybit"]["live"],
+    market: 'linear'
+}, bybit.DefaultLogger);
+//Websocket.subscribe(['position', 'execution', 'trade', 'wallet']);
+Websocket.subscribe(['trade.BTCUSDT', 'candle.5.BTCUSDT', 'liquidation.BTCUSDT', 'orderBookL2_25.BTCUSDT', 'instrument_info.BTCUSDT']);
+Websocket.on('update', update => {
+    let packet = update.data[0]
+    switch (update.topic)
+    {
+        case 'orderBookL2_25.BTCUSDT':
+            {
+                if (update.type == 'snapshot')
+                {
+                    for (let i in update.data)
+                    {
+                        orderbook[update.data[i].price] = {};
+                        for (let j in Object.keys(update.data[i]))
+                        {
+                            let key = Object.keys(update.data[i])[j];
+                            if (key != 'price')
+                            {
+                                orderbook[update.data[i].price][key] = update.data[i][key];
+                            }
+                        }
+                    }
+                }
+                else if (update.type == 'delta')
+                {
+                    for (let i in update.data.delete)
+                    {
+                        if (orderbook.hasOwnProperty(update.data.delete[i].price))
+                        {
+                            delete orderbook[update.data.delete[i].price];
+                        }
+                    }
+                    for (let i in update.data.update)
+                    {
+                        if (orderbook.hasOwnProperty(update.data.update[i].price))
+                        {
+                            for (let j in Object.keys(update.data.update[i]))
+                            {
+                                let key = Object.keys(update.data.update[i]);
+                                if (key != 'price')
+                                {
+                                    orderbook[update.data.update[i].price][key] = update.data.update[i][key];
+                                }
+                            }
+                        }
+                    }
+                    for (let i in update.data.insert)
+                    {
+                        if (!orderbook.hasOwnProperty(update.data.insert[i]))
+                        {
+                            orderbook[update.data.insert[i].price] = {};
+                            for (let j in Object.keys(update.data.insert[i]))
+                            {
+                                let key = Object.keys(update.data.insert[i]);
+                                orderbook[update.data.insert[i].price][key] = update.data.insert[i][key];
+                            }
+                        }
+                        else
+                        {
+                            for (let j in Object.keys(update.data.insert[i]))
+                            {
+                                let key = Object.keys(update.data.insert[i])[j];
+                                orderbook[update.data.insert[i].price][key] = update.data.insert[i][key];
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+        case 'instrument_info.BTCUSDT':
+            {
+                if (update.type == 'snapshot')
+                {
+                    symbol = update.data;
+                }
+                else if (update.type == 'delta')
+                {
+                    for (let i in Object.keys(update.data))
+                    {
+                        let key = Object.keys(update.data)[i];
+                        symbol[key] = update.data[key];
+                    }
+                }
+            }
+            break;
+    }
+});
 
 /*
 class Trader
@@ -112,108 +221,26 @@ class MarketSimulator
 }
 */
 
-const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-
-let orderbook = {};
-let symbol = {};
-
-//Manage Market Data
-const REST = new bybit.LinearClient(
-    config["bybit"]["api"],
-    config["bybit"]["secret"],
-    config["bybit"]["live"]
-);
-const Websocket = new bybit.WebsocketClient({ 
-    key: config["bybit"]["api"], 
-    secret: config["bybit"]["secret"],
-    livenet: config["bybit"]["live"],
-    market: 'linear'
-}, bybit.DefaultLogger);
-//Websocket.subscribe(['position', 'execution', 'trade', 'wallet']);
-Websocket.subscribe(['trade.BTCUSDT', 'candle.5.BTCUSDT', 'liquidation.BTCUSDT', 'orderBookL2_25.BTCUSDT', 'instrument_info.BTCUSDT']);
-Websocket.on('update', update => {
-    //console.log('Update - ', update);
-    let packet = update.data[0]
-    switch (update.topic)
-    {
-        case 'orderBookL2_25.BTCUSDT':
-            {
-                if (update.type == 'snapshot')
-                {
-                    for (let i in update.data)
-                    {
-                        orderbook[update.data[i].price] = {};
-                        for (let j in Object.keys(update.data[i]))
-                        {
-                            let key = Object.keys(update.data[i])[j];
-                            if (key != 'price')
-                            {
-                                orderbook[update.data[i].price][key] = update.data[i][key];
-                            }
-                        }
-                    }
-                }
-                else if (update.type == 'delta')
-                {
-                    for (let i in update.data.delete)
-                    {
-                        if (orderbook.hasOwnProperty(update.data.delete[i].price))
-                        {
-                            delete orderbook[update.data.delete[i].price];
-                        }
-                    }
-                    for (let i in update.data.update)
-                    {
-                        if (orderbook.hasOwnProperty(update.data.update[i].price))
-                        {
-                            for (let j in Object.keys(update.data.update[i]))
-                            {
-                                let key = Object.keys(update.data.update[i]);
-                                if (key != 'price')
-                                {
-                                    orderbook[update.data.update[i].price][key] = update.data.update[i][key];
-                                }
-                            }
-                        }
-                    }
-                    for (let i in update.data.insert)
-                    {
-                        if (!orderbook.hasOwnProperty(update.data.insert[i]))
-                        {
-                            orderbook[update.data.insert[i].price] = {};
-                            for (let j in Object.keys(update.data.insert[i]))
-                            {
-                                let key = Object.keys(update.data.insert[i]);
-                                orderbook[update.data.insert[i].price][key] = update.data.insert[i][key];
-                            }
-                        }
-                        else
-                        {
-                            for (let j in Object.keys(update.data.insert[i]))
-                            {
-                                let key = Object.keys(update.data.insert[i])[j];
-                                orderbook[update.data.insert[i].price][key] = update.data.insert[i][key];
-                            }
-                        }
-                    }
-                }
-            }
-            break;
-        case 'instrument_info.BTCUSDT':
-            {
-                if (update.type == 'snapshot')
-                {
-                    symbol = update.data;
-                }
-                else if (update.type == 'delta')
-                {
-                    for (let i in Object.keys(update.data))
-                    {
-                        let key = Object.keys(update.data)[i];
-                        symbol[key] = update.data[key];
-                    }
-                }
-            }
-            break;
-    }
+app.get('/', function (req, res) {
+    let title = "";
+    let generation = 0;
+    let highScore = 0;
+    let page = `
+    <html>
+        <head>
+            <title>${title}</title>
+        </head>
+        <body>
+            <div id="wrapper">
+                <div id="chart"></div>
+                <div id="status">
+                    <p>generation<br><span id="generation">${generation}</span></p>
+                    <p>highest score<br><span id="highest-score">${highScore}</span></p>
+                </div>
+            </div>
+        </body>
+    <html>
+    `;
+    res.send(page);
+    res.end();
 });

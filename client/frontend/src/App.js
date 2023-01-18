@@ -26,9 +26,12 @@ import { Lake } from './Components/Lake.tsx';
 import { Contact } from './Components/Contact.tsx';
 import { About } from './Components/About.tsx';
 
+import { Boring } from './BoringSite/BoringSite.tsx';
+
 
 function App() {
   const [page, setPage] = useState("Home");
+  const [boring, setBoring] = useState(true);
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   const wallets = useMemo(() => [
@@ -46,21 +49,25 @@ function App() {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <div className="Container">
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Nav className="mainNav" callback={setPage} page={page} />} >
-                    <Route index element={<Home className="main" />} />
-                    <Route path="blog" element={<Blog className="main" />} />
-                    <Route path="claw" element={<Claw className="main" />} />
-                    <Route path="invest" element={<Invest className="main" />} />
-                    <Route path="casino" element={<Casino className="main" />} />
-                    <Route path="lake" element={<Lake className="main" />} />
-                    <Route path="contact" element={<Contact className="main" />} />
-                    <Route path="about" element={<About className="main" />} />
-                    <Route path="*" element={<div></div>} />
-                  </Route>
-                </Routes>
-              </BrowserRouter>
+              { boring ? 
+                <Boring />
+                :
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Nav className="mainNav" callback={setPage} page={page} />} >
+                      <Route index element={<Home className="main" />} />
+                      <Route path="blog" element={<Blog className="main" />} />
+                      <Route path="claw" element={<Claw className="main" />} />
+                      <Route path="invest" element={<Invest className="main" />} />
+                      <Route path="casino" element={<Casino className="main" />} />
+                      <Route path="lake" element={<Lake className="main" />} />
+                      <Route path="contact" element={<Contact className="main" />} />
+                      <Route path="about" element={<About className="main" />} />
+                      <Route path="*" element={<div></div>} />
+                    </Route>
+                  </Routes>
+                </BrowserRouter>
+              }
             </div>
           </WalletModalProvider>
         </WalletProvider>

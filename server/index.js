@@ -66,6 +66,21 @@ async function confirmPayment(signature) {
     return false;
 }
 
+async function sendPayment(recipient, amount) {
+    const transaction = new solana.Transaction().add(
+        solana.SystemProgram.transfer({
+            fromPubkey: wallet.publicKey,
+            toPubkey: recipient,
+            lamports: amount
+        }),
+    );
+    const signature = await web3.sendAndConfirmTransaction(
+        network,
+        transaction,
+        [wallet]
+    );
+}
+
 app.get('/blog', function (req, res) {
     console.log("[DBG HTTPS] - Blog Posts Requested");
     database.connect(function (err) {

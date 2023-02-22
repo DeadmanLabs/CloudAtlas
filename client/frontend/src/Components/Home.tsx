@@ -56,11 +56,11 @@ const TradingViewWidget = (props) => {
         script.id = "widget";
         script.async = true;
         script.innerHTML = JSON.stringify(symbols);
-        document.getElementById("widget-container").appendChild(script);
+        document.getElementById("widget-container")!.appendChild(script);
         return () => {
             if (document.getElementById("widget-container") != null)
             {
-                document.getElementById("widget-container").removeChild(script);
+                document.getElementById("widget-container")!.removeChild(script);
             }
         }
     }, [symbols]);
@@ -75,29 +75,25 @@ const TradingViewWidget = (props) => {
     );
 }
 
-const TwitterTimeline = (props) => {
-
+const TwitterTimeline = ({ username }) => {
     useEffect(() => {
-        let script = document.createElement('script');
-        script.async = true;
-        script.src = "https://platform.twitter.com/widgets.js";
-
-        document.getElementById("twitter-container")
-        document.getElementById("twitter-container").appendChild(script);
-        return () => {
-            document.getElementById("twitter-container").removeChild(script);
-        }
+      const script = document.createElement("script");
+      script.src = "https://platform.twitter.com/widgets.js";
+      script.async = true;
+      document.body.appendChild(script);
     }, []);
-
+  
     return (
-        <div id="twitter-container">
-            <a className="twitter-timeline" data-theme="dark" href="https://twitter.com/KronosKorpse?ref_src=twsrc%5Etfw">Tweets by KronosKorpse</a>
-        </div>
+      <a
+        className="twitter-timeline"
+        href={`https://twitter.com/${username}`}
+        data-tweet-limit="25"
+        data-chrome="nofooter"
+      >
+        Tweets by {username}
+      </a>
     );
-    
-
-    //return (<div></div>);
-}
+  };
 
 const Home = (props) => {
 
@@ -105,17 +101,19 @@ const Home = (props) => {
         <div className="home">
             <TradingViewWidget />
             {
-            <div className="side-display">
-                <div className="left-side-display">
-                    <div id="left"></div>
+                <div className="side-display">
+                    <div className="left-side-display">
+                        <div id="left">
+                            <TwitterTimeline username="KronosKorpse" />
+                        </div>
+                    </div>
+                    <div className="center-side-display">
+                        <div id="center"></div>
+                    </div>
+                    <div className="right-side-display">
+                        <div id="right"></div>
+                    </div>
                 </div>
-                <div className="center-side-display">
-                    <div id="center"></div>
-                </div>
-                <div className="right-side-display">
-                    <div id="right"></div>
-                </div>
-            </div>
             }
         </div>
     );

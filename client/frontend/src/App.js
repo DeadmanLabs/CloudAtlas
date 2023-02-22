@@ -25,7 +25,7 @@ import { Casino } from './Components/Casino.tsx';
 import { Lake } from './Components/Lake.tsx';
 import { Contact } from './Components/Contact.tsx';
 import { About } from './Components/About.tsx';
-
+import { Footer } from './Components/Footer.tsx';
 
 function App() {
   const [page, setPage] = useState("Home");
@@ -40,6 +40,19 @@ function App() {
     new SolletExtensionWalletAdapter({ network })
   ], [network]);
 
+  function Container(element)
+  {
+    return (
+      <>
+        <Nav className="mainNav" callback={setPage} page={page} />
+        {
+          element
+        }
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <div className="App">
       <ConnectionProvider endpoint={endpoint}>
@@ -48,16 +61,16 @@ function App() {
             <div className="Container">
               <BrowserRouter>
                 <Routes>
-                  <Route path="/" element={<Nav className="mainNav" callback={setPage} page={page} />} >
-                    <Route index element={<Home className="main" />} />
-                    <Route path="blog" element={<Blog className="main" />} />
-                    <Route path="claw" element={<Claw className="main" />} />
-                    <Route path="invest" element={<Invest className="main" />} />
-                    <Route path="casino" element={<Casino className="main" />} />
-                    <Route path="lake" element={<Lake className="main" />} />
-                    <Route path="contact" element={<Contact className="main" />} />
-                    <Route path="about" element={<About className="main" />} />
-                    <Route path="*" element={<div></div>} />
+                  <Route path="/" >
+                    <Route path="/" element={Container(<Home className="main" />)} />
+                    <Route path="blog" element={Container(<Blog className="main" />)} />
+                    <Route path="claw" element={Container(<Claw className="main" />)} />
+                    <Route path="invest" element={Container(<Invest className="main" />)} />
+                    <Route path="casino" element={Container(<Casino className="main" />)} />
+                    <Route path="lake" element={Container(<Lake className="main" />)} />
+                    <Route path="contact" element={Container(<Contact className="main" />)} />
+                    <Route path="about" element={Container(<About className="main" />)} />
+                    <Route path="*" element={Container(<div></div>)} />
                   </Route>
                 </Routes>
               </BrowserRouter>

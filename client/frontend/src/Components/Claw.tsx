@@ -2,13 +2,13 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletNotConnectedError, WalletSignTransactionError } from '@solana/wallet-adapter-base';
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-import ws, { Socket } from 'socket.io-client';
+import ws, { Socket, Manager } from 'socket.io-client';
 
 import './Styles/Claw.css';
 
 const Claw = (props) => {
 
-    const [socket, setSocket] = useState(undefined);
+    const [socket, setSocket] = useState(new Socket(new Manager(), "", undefined));
     const [response, setResponse] = useState(undefined);
     const [playing, setPlaying] = useState(false);
     const [queue, setQueue] = useState([]);

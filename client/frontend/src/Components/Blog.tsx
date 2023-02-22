@@ -16,7 +16,7 @@ const Post = (props) => {
 
 const Blog = (props) => {
 
-    const [posts, setPosts] = useState(undefined);
+    const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const getBlog = async () => {

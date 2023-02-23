@@ -18,7 +18,7 @@ const Nav = (props) => {
     const { publicKey, sendTransaction } = useWallet();
 
     const pages = [ "Home", "Blog", "Claw", "Invest", "Gamble", "Lake", "Contact", "About" ];
-    const routes = [ "index", "blog", "claw", "invest", "casino", "lake", "contact", "about" ]
+    const routes = [ "", "blog", "claw", "invest", "casino", "lake", "contact", "about" ]
     const [loading, setLoading] = useState(false);
     const [tokens, setTokens] = useState("");
 

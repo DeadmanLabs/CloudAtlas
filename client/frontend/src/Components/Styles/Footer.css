@@ -1,0 +1,27 @@
+.footer {
+    background-color: #000000;
+    padding: 20px 0;
+    font-size: 14px;
+    color: #ffffff;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer p {
+    margin-bottom: 0;
+}
+
+.footer ul {
+    margin-bottom: 0;
+}
+
+.footer li {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.footer li:last-child {
+    margin-right: 0;
+}
